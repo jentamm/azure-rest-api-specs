@@ -46,73 +46,127 @@ model MandatoryApprover {
   approverEntraId: string;
 }
 
+@added(Microsoft.Mission.Versions.v2025_11_01_preview)
+@doc("Granular approval setting configuration with policy, minimum approvers, and mandatory approvers.")
+model ApprovalSettingConfiguration {
+  @doc("Approval policy (Required or NotRequired).")
+  approvalPolicy?: ApprovalPolicy;
+
+  @doc("Minimum number of approvers required for this approval setting.")
+  minimumApproversRequired?: int64;
+
+  @identifiers(#["approverEntraId"])
+  @doc("List of mandatory approvers for this approval setting.")
+  mandatoryApprovers?: MandatoryApprover[];
+}
+
 @added(Microsoft.Mission.Versions.v2024_12_01_preview)
 @doc("ApprovalSettings Properties")
 model ApprovalSettings {
   @doc("Approval required for endpoint creation (Required or NotRequired).")
   @visibility(Lifecycle.Read, Lifecycle.Create)
+  @removed(Microsoft.Mission.Versions.v2025_11_01_preview)
   endpointCreation?: ApprovalPolicy;
 
   @doc("Approval required for endpoint update (Required or NotRequired).")
   @visibility(Lifecycle.Read, Lifecycle.Create)
+  @removed(Microsoft.Mission.Versions.v2025_11_01_preview)
   endpointUpdate?: ApprovalPolicy;
 
   @doc("Approval required for endpoint deletion (Required or NotRequired).")
   @visibility(Lifecycle.Read, Lifecycle.Create)
+  @removed(Microsoft.Mission.Versions.v2025_11_01_preview)
   endpointDeletion?: ApprovalPolicy;
 
   @doc("Approval required for enclave connection creation (Required or NotRequired).")
   @visibility(Lifecycle.Read, Lifecycle.Create)
-  connectionCreation?: ApprovalPolicy;
+  @typeChangedFrom(
+    Microsoft.Mission.Versions.v2025_11_01_preview,
+    ApprovalPolicy
+  )
+  connectionCreation?: ApprovalSettingConfiguration;
 
   @doc("Approval required for enclave connection update (Required or NotRequired).")
   @visibility(Lifecycle.Read, Lifecycle.Create)
-  connectionUpdate?: ApprovalPolicy;
+  @typeChangedFrom(
+    Microsoft.Mission.Versions.v2025_11_01_preview,
+    ApprovalPolicy
+  )
+  connectionUpdate?: ApprovalSettingConfiguration;
 
   @doc("Approval required for enclave connection deletion (Required or NotRequired).")
   @visibility(Lifecycle.Read, Lifecycle.Create)
+  @removed(Microsoft.Mission.Versions.v2025_11_01_preview)
   connectionDeletion?: ApprovalPolicy;
 
   @doc("Approval required for virtual enclave creation (Required or NotRequired).")
   @visibility(Lifecycle.Read, Lifecycle.Create)
-  enclaveCreation?: ApprovalPolicy;
+  @typeChangedFrom(
+    Microsoft.Mission.Versions.v2025_11_01_preview,
+    ApprovalPolicy
+  )
+  enclaveCreation?: ApprovalSettingConfiguration;
 
   @doc("Approval required for virtual enclave deletion (Required or NotRequired).")
   @visibility(Lifecycle.Read, Lifecycle.Create)
+  @removed(Microsoft.Mission.Versions.v2025_11_01_preview)
   enclaveDeletion?: ApprovalPolicy;
 
   @doc("Approval required for toggling maintenance mode (Required or NotRequired).")
   @visibility(Lifecycle.Read, Lifecycle.Create)
+  @removed(Microsoft.Mission.Versions.v2025_11_01_preview)
   maintenanceMode?: ApprovalPolicy;
 
   @doc("Approval required for deploying service catalog templates (Required or NotRequired).")
   @visibility(Lifecycle.Read, Lifecycle.Create)
+  @removed(Microsoft.Mission.Versions.v2025_11_01_preview)
   serviceCatalogDeployment?: ApprovalPolicy;
 
   @added(Microsoft.Mission.Versions.v2024_12_01_preview)
   @doc("Notification will be sent on creation of an Approval Request")
   @visibility(Lifecycle.Read, Lifecycle.Create)
+  @removed(Microsoft.Mission.Versions.v2025_11_01_preview)
   notificationOnApprovalCreation?: ApprovalPolicy;
 
   @added(Microsoft.Mission.Versions.v2024_12_01_preview)
   @doc("Notification will be sent on any action taken (Approve/Reject) on an Approval Request")
   @visibility(Lifecycle.Read, Lifecycle.Create)
+  @removed(Microsoft.Mission.Versions.v2025_11_01_preview)
   notificationOnApprovalAction?: ApprovalPolicy;
 
   @added(Microsoft.Mission.Versions.v2024_12_01_preview)
   @doc("Notification will be sent on deletion of an Approval Request")
   @visibility(Lifecycle.Read, Lifecycle.Create)
+  @removed(Microsoft.Mission.Versions.v2025_11_01_preview)
   notificationOnApprovalDeletion?: ApprovalPolicy;
 
   @added(Microsoft.Mission.Versions.v2024_12_01_preview)
   @identifiers(#["approverEntraId"])
   @doc("List of mandatory approvers for the approval request")
+  @removed(Microsoft.Mission.Versions.v2025_11_01_preview)
   mandatoryApprovers?: MandatoryApprover[];
 
   @added(Microsoft.Mission.Versions.v2024_12_01_preview)
   @doc("Minimum number of approvers required for the approval request")
   @visibility(Lifecycle.Read, Lifecycle.Create)
+  @removed(Microsoft.Mission.Versions.v2025_11_01_preview)
   minimumApproversRequired?: int64;
+
+  @added(Microsoft.Mission.Versions.v2025_11_01_preview)
+  @doc("Approval configuration for community endpoint updates.")
+  communityEndpointUpdate?: ApprovalSettingConfiguration;
+
+  @added(Microsoft.Mission.Versions.v2025_11_01_preview)
+  @doc("Approval configuration for enclave endpoint updates.")
+  enclaveEndpointUpdate?: ApprovalSettingConfiguration;
+
+  @added(Microsoft.Mission.Versions.v2025_11_01_preview)
+  @doc("Approval configuration for community maintenance mode.")
+  communityMaintenanceMode?: ApprovalSettingConfiguration;
+
+  @added(Microsoft.Mission.Versions.v2025_11_01_preview)
+  @doc("Approval configuration for enclave maintenance mode.")
+  enclaveMaintenanceMode?: ApprovalSettingConfiguration;
 }
 
 @added(Microsoft.Mission.Versions.v2024_12_01_preview)
@@ -183,6 +237,20 @@ model CommunityProperties is CommunityBaseModel {
   @added(Microsoft.Mission.Versions.v2024_12_01_preview)
   @doc("Maintenance Mode configuration.")
   maintenanceModeConfiguration?: MaintenanceModeConfigurationModel;
+
+  @added(Microsoft.Mission.Versions.v2025_11_01_preview)
+  @identifiers(#[])
+  @doc("DedicatedHub List.")
+  @visibility(Lifecycle.Read)
+  dedicatedHubList?: DedicatedHubResource[];
+
+  @added(Microsoft.Mission.Versions.v2026_01_01_preview)
+  @doc("Community Monitoring Settings for diagnostic and virtual network flow logs")
+  monitoringSettings?: MonitoringSettingsModel;
+
+  @added(Microsoft.Mission.Versions.v2026_03_01_preview)
+  @doc("Address spaces list")
+  addressSpaces?: string[];
 }
 
 @doc("Community Resource Properties without default values")
@@ -195,6 +263,14 @@ model CommunityPatchProperties
   @added(Microsoft.Mission.Versions.v2024_12_01_preview)
   @doc("Maintenance Mode configuration.")
   maintenanceModeConfiguration?: MaintenanceModeConfigurationPatchModel;
+
+  @added(Microsoft.Mission.Versions.v2026_01_01_preview)
+  @doc("Community Monitoring Settings for diagnostic and virtual network flow logs")
+  monitoringSettings?: MonitoringSettingsPatchModel;
+
+  @added(Microsoft.Mission.Versions.v2026_03_01_preview)
+  @doc("Address spaces list")
+  addressSpaces?: string[];
 }
 
 @doc("Community Patch Resource")
